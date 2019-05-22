@@ -17,7 +17,7 @@
                     <td>{{ item.roleDesc }}</td>
                     <td>
                         <el-button type='danger'>编辑角色</el-button>
-                        <el-button type='danger'>删除角色</el-button>
+                        <el-button type='danger' @click="deleteRole(item)">删除角色</el-button>
                     </td>
                 </tr>
             </table>
@@ -27,22 +27,31 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     data(){
         return {
-            allRoles:[]
+
         }
     },
+    computed:{
+        ...mapState(['allRoles'])
+    },
     methods:{
-        
+        // 删除角色
+        deleteRole(item){
+            var action = ()=>{
+                this.$http.post(this.$apis.deleteRole,{_id:item._id})
+                .then((resp)=>{
+                    // console.log(resp)
+                    this.$store.dispatch('loadDindAllRoles')
+                })
+            }
+            this.operatorConfirm("删除",action);
+        }
     },
     created(){
-        this.$http.get(this.$apis.findAllRoles)
-        .then((resp)=>{
-            console.log(resp)
-            var resp = resp.data;
-            this.allRoles = resp.allRoles;
-        })
+        this.$store.dispatch('loadDindAllRoles')
     }
 }
 </script>

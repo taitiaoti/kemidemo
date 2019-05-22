@@ -78,8 +78,10 @@ export default {
                     this.$http.post(this.$apis.addNewRole,this.userInfo)
                     .then((resp)=>{
                         var action = ()=>{
+                            this.userInfo={};
                             this.$router.go(-1);
-                            this.userInfo={}
+                            // 重新请求所有角色信息
+                            this.$store.dispatch('loadDindAllRoles');
                         }
                         this.operatorConfirm("新增",action);
                     })
