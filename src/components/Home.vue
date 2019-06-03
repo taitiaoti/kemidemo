@@ -29,8 +29,9 @@ export default {
             this.operatorConfirm('退出',action)
         }
     },
-    mounted(){
-        this.$store.dispatch('loadPermission')
+    created(){
+        this.$store.dispatch('loadPermission'),
+        this.$store.dispatch('loadRoles')
     }
 }
 </script>

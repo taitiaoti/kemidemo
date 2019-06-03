@@ -16,7 +16,7 @@
                     <td>{{ item.roleName }}</td>
                     <td>{{ item.roleDesc }}</td>
                     <td>
-                        <el-button type='danger'>编辑角色</el-button>
+                        <el-button type='danger' @click="pushView({name:'addNewRole',params:{allRoles:item}})">编辑角色</el-button>
                         <el-button type='danger' @click="deleteRole(item)">删除角色</el-button>
                     </td>
                 </tr>
@@ -41,13 +41,12 @@ export default {
         // 删除角色
         deleteRole(item){
             var action = ()=>{
-                this.$http.post(this.$apis.deleteRole,{_id:item._id})
+                this.post(this.$apis.deleteRole,{_id:item._id})
                 .then((resp)=>{
-                    // console.log(resp)
                     this.$store.dispatch('loadDindAllRoles')
-                })
+                })  
             }
-            this.operatorConfirm("删除",action);
+            this.operatorConfirm('删除',action)
         }
     },
     created(){

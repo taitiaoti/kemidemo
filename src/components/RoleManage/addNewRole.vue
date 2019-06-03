@@ -27,7 +27,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button type='danger' @click="cancel">取 消</el-button>
-                <el-button type="primary" @click="addNew">新 增</el-button>
+                <el-button type="primary" @click="addNew">{{isUpdateRoleInfo?'编 辑':'新 增'}}</el-button>
             </span>
         </el-dialog>
     </div>
@@ -39,6 +39,7 @@ export default {
     data() {
       return {
         dialogVisible: true,
+        isUpdateRoleInfo:false,
         defaultProps: {
             children: 'children',
             label: 'permissionDesc'
@@ -74,17 +75,25 @@ export default {
             // console.log(this.userInfo)
             this.$refs['userInfo'].validate((valid)=>{
                 if(valid){
-                    // 新增文章
-                    this.$http.post(this.$apis.addNewRole,this.userInfo)
-                    .then((resp)=>{
-                        var action = ()=>{
+                    if(this.isUpdateRoleInfo){
+                        // 更新
+                       this.post(this.$apis.updateRoleInfo,this.userInfo)
+                       .then((resp)=>{
+                           this.userInfo={};
+                           this.$store.dispatch('loadDindAllRoles');
+                           this.$router.go(-1)
+                       })
+                    }else{
+                        // 新增
+                        this.post(this.$apis.addNewRole,this.userInfo)
+                        .then((resp)=>{
                             this.userInfo={};
                             this.$router.go(-1);
                             // 重新请求所有角色信息
                             this.$store.dispatch('loadDindAllRoles');
-                        }
-                        this.operatorConfirm("新增",action);
-                    })
+                        })
+                    }
+                    
                 }else{
                     return false
                 }
@@ -100,6 +109,16 @@ export default {
         },
         handleClose() {
             this.cancel();
+        }
+    },
+    created(){
+        // console.log(this.$route.params.allRoles)
+        if(this.$route.params.allRoles){
+            this.isUpdateRoleInfo = true;
+            this.userInfo = this.$route.params.allRoles;
+            // console.log(this.userInfo)
+        }else{
+            this.isUpdateRoleInfo = false;
         }
     }
 }

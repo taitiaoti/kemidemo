@@ -8,9 +8,10 @@ Vue.mixin({
         post(url,params){
             return this.$http.post(url,params)
             .then((resp)=>{
+                console.log(resp)
                 this.$message({
-                    type:resp.data.success?'cuccess':'danger',
-                    massage:resp.data.messge
+                    type:resp.data.success?'success':'danger',
+                    message:resp.data.message
                 })
             })
         },

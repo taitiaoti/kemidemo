@@ -18,7 +18,6 @@ const loadAction = (commit,payload,mutationName)=>{
 }
 // 获取所有角色信息
 const Totree = (state,payload)=>{
-  state.permissionList = payload;
   // 处理数据
   var allPermission = payload.allPermission;
   // 创建一个空对象
@@ -54,19 +53,32 @@ const Totree = (state,payload)=>{
 
 export default new Vuex.Store({
   state: {
+    roles:[],
     permissionList:[],
     userPermission:[],
-    allRoles:[]
+    allRoles:[],      //所有角色
+    allUsers:[],      //所有账号
+    allGames:[],      //所有彩种
   },
   getters:{
    
   },
   mutations: {
     LOADPERMISSION(state,payload){
-        Totree(state,payload)
+      state.permissionList = payload;
+      Totree(state,payload)
     },
     LOADDINDALLPOLES(state,payload){
       state.allRoles = payload;
+    },
+    LOADFINDALLUSERS(state,payload){
+      state.allUsers = payload;
+    },
+    LOADROLES(state,payload){
+      state.roles = payload
+    },
+    LOADFINDALLGAMES(state,payload){
+      state.allGames = payload;
     }
   },
   actions: {
@@ -83,6 +95,29 @@ export default new Vuex.Store({
             var resp = resp.data.allRoles;
             commit('LOADDINDALLPOLES',resp)
         })
+    },
+    //获取所有账号
+    loadFindAllUsers({commit},payload={}){
+      payload.api = apis.findAllUsers
+      axios.get(payload.api)
+        .then((resp)=>{
+            var resp = resp.data.allUsers;
+            commit('LOADFINDALLUSERS',resp)
+        })
+    },
+    loadRoles({commit},payload){
+      var myRoles = JSON.parse(localStorage.getItem('response')).response.roles;
+      commit('LOADROLES',myRoles)
+    },
+    // 所有彩种
+    loadFindAllGames({commit},payload={}){
+      payload.api = apis.findAllGames;
+      axios.get(payload.api)
+      .then((resp)=>{
+        var resp = resp.data.data;
+        // console.log(resp)
+        commit('LOADFINDALLGAMES',resp)
+      })
     }
   }
 })
